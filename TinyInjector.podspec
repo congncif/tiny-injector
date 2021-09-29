@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
   s.name             = 'TinyInjector'
-  s.version          = '0.1.0'
+  s.version          = '1.0.0'
   s.summary          = 'Super light weight of Dependency Manager.'
 
   s.description      = <<-DESC
-An implementation of Service Locator but forcus only dependency management and dependency injection.
+An implementation of Service Locator but focus only dependency management and dependency injection.
                        DESC
 
   s.homepage         = 'https://github.com/congncif/tiny-injector'

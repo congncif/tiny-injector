@@ -3,8 +3,8 @@ import Foundation
 @propertyWrapper
 public struct Injected<Service> {
     private var service: Service
-    public init(name: String? = nil, injector: Injector = .root) {
-        service = injector.inject(name: name)
+    public init(name: String? = nil, registry: ServiceRegistry = .container()) {
+        service = registry.resolve(name: name)
     }
 
     public var wrappedValue: Service {
@@ -22,12 +22,12 @@ public struct Injected<Service> {
 public struct LazyInjected<Service> {
     private var service: Service!
 
-    public var injector: Injector
+    public var registry: ServiceRegistry
     public var name: String?
 
-    public init(name: String? = nil, injector: Injector = .root) {
+    public init(name: String? = nil, registry: ServiceRegistry = .container()) {
         self.name = name
-        self.injector = injector
+        self.registry = registry
     }
 
     public var isEmpty: Bool {
@@ -37,7 +37,7 @@ public struct LazyInjected<Service> {
     public var wrappedValue: Service {
         mutating get {
             if self.service == nil {
-                let locatedService: Service = injector.inject(name: name)
+                let locatedService: Service = registry.resolve(name: name)
                 service = locatedService
             }
             return service
@@ -59,8 +59,8 @@ public struct LazyInjected<Service> {
 public struct OptionalInjected<Service> {
     private var service: Service?
 
-    public init(name: String? = nil, injector: Injector = .root) {
-        service = injector.optionalInject(name: name)
+    public init(name: String? = nil, registry: ServiceRegistry = .container()) {
+        service = registry.optionalResolve(name: name)
     }
 
     public var wrappedValue: Service? {
