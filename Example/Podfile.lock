@@ -1,0 +1,16 @@
+PODS:
+  - TinyInjector (1.0.1)
+
+DEPENDENCIES:
+  - TinyInjector (from `../`)
+
+EXTERNAL SOURCES:
+  TinyInjector:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  TinyInjector: a075bc4b85e869040b1cb8bac4b7d8a00a4ff25b
+
+PODFILE CHECKSUM: 2568e383acc06da33f55c5d712a0bdfa44a93c00
+
+COCOAPODS: 1.11.2

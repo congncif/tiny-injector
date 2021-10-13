@@ -1,0 +1,6 @@
+framework module TinyInjector {
+  umbrella header "TinyInjector-umbrella.h"
+
+  export *
+  module * { export * }
+}

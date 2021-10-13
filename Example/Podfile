@@ -1,0 +1,12 @@
+platform :ios, '11.0'
+
+target 'Example' do
+  use_frameworks!
+  inhibit_all_warnings!
+
+  pod "TinyInjector", :path => "../"
+  
+  target 'ExampleTests' do
+    inherit! :search_paths
+  end
+end

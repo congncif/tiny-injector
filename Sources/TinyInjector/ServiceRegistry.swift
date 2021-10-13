@@ -1,3 +1,10 @@
+//
+//  ServiceRegistry.swift
+//  ServiceRegistry
+//
+//  Created by NGUYEN CHI CONG on 9/6/21.
+//
+
 import Foundation
 
 public typealias ServiceRegistration<Service> = (ServiceRegistry) -> Service?
@@ -13,7 +20,7 @@ public final class ServiceRegistry {
         public static let shared = Domain(rawValue: "___SHARED___")
     }
 
-    private static var containers: [Domain: ServiceRegistry] = [:]
+    private(set) static var containers: [Domain: ServiceRegistry] = [:]
 
     public static func container(_ domain: Domain = .shared) -> ServiceRegistry {
         if let registry = containers[domain] {
@@ -83,8 +90,8 @@ public final class ServiceRegistry {
     }
 
     private let lock = NSRecursiveLock()
-    private var registrations: [String: Any] = [:]
-    private var parent: ServiceRegistry?
+    private(set) var registrations: [String: Any] = [:]
+    private(set) weak var parent: ServiceRegistry?
 }
 
 private extension ServiceRegistry {
