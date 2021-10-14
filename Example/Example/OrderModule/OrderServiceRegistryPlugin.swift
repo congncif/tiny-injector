@@ -9,8 +9,7 @@ import Foundation
 import TinyInjector
 
 public struct OrderServiceRegistryPlugin: ServiceRegistryPlugin {
-    public func registerAllServices() {
-        ServiceRegistry.container()
-            .register { OrderProvider() }.implements(OrderService.self)
+    public func registerAllServices(in main: MainRegistryComponent) {
+        main.register { OrderProvider() }.implements(OrderService.self)
     }
 }

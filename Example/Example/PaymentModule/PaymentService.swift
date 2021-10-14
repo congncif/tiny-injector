@@ -15,7 +15,7 @@ import TinyInjector
 
 class PaymentProvider: PaymentService {
     // Inject an internal service
-    @LazyInjected(registry: .container(.payment)) var internalService: PaymentInternalService
+    @LazyInjected(domain: .payment) var internalService: PaymentInternalService
 
     func pay(item itemID: String, completion: @escaping (Result<String, Error>) -> Void) {
         print("Process a payment for item \(itemID)")

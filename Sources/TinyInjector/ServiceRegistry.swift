@@ -7,9 +7,44 @@
 
 import Foundation
 
-public typealias ServiceRegistration<Service> = (ServiceRegistry) -> Service?
+public protocol ServiceRegistrar {
+    @discardableResult
+    func register<Service>(withName name: String?, _ serviceRegistration: @escaping ServiceRegistration<Service>) -> RegistrationOptions<Service>
+}
 
-public final class ServiceRegistry {
+public extension ServiceRegistrar {
+    @discardableResult
+    func register<Service>(_ serviceRegistration: @escaping ServiceRegistration<Service>) -> RegistrationOptions<Service> {
+        register(withName: nil, serviceRegistration)
+    }
+
+    @discardableResult
+    func register<Service>(withName name: String? = nil, _ serviceRegistration: @escaping () -> Service?) -> RegistrationOptions<Service> {
+        let registration: ServiceRegistration<Service> = { _ in
+            serviceRegistration()
+        }
+        return register(withName: name, registration)
+    }
+}
+
+public protocol ServiceResolver {
+    func optionalResolve<Service>(implementationOf _: Service.Type, name: String?) -> Service?
+    func resolve<Service>(implementationOf _: Service.Type, name: String?) -> Service
+}
+
+public extension ServiceResolver {
+    func optionalResolve<Service>(name: String? = nil) -> Service? {
+        optionalResolve(implementationOf: Service.self, name: name)
+    }
+
+    func resolve<Service>(name: String? = nil) -> Service {
+        resolve(implementationOf: Service.self, name: name)
+    }
+}
+
+public typealias ServiceRegistration<Service> = (ServiceResolver) -> Service?
+
+public final class ServiceRegistry: ServiceRegistrar, ServiceResolver {
     public struct Domain: Hashable, RawRepresentable, Equatable {
         public let rawValue: String
 
@@ -22,14 +57,14 @@ public final class ServiceRegistry {
 
     private(set) static var containers: [Domain: ServiceRegistry] = [:]
 
-    public static func container(_ domain: Domain = .shared) -> ServiceRegistry {
+    static func container(domain: Domain) -> ServiceRegistry {
         if let registry = containers[domain] {
             return registry
         }
 
         var newRegistry: ServiceRegistry
         if domain != .shared {
-            newRegistry = ServiceRegistry(parent: .container(.shared))
+            newRegistry = ServiceRegistry(parent: .container(domain: .shared))
         } else {
             newRegistry = ServiceRegistry()
         }
@@ -37,12 +72,16 @@ public final class ServiceRegistry {
         return newRegistry
     }
 
+    public static var shared: ServiceRegistry {
+        return container(domain: .shared)
+    }
+
     public init(parent: ServiceRegistry? = nil) {
         self.parent = parent
     }
 
     @discardableResult
-    public func register<Service>(withName name: String? = nil, _ serviceRegistration: @escaping ServiceRegistration<Service>) -> RegistrationOptions<Service> {
+    public func register<Service>(withName name: String?, _ serviceRegistration: @escaping ServiceRegistration<Service>) -> RegistrationOptions<Service> {
         lock.lock()
         defer {
             lock.unlock()
@@ -54,15 +93,7 @@ public final class ServiceRegistry {
         return RegistrationOptions<Service>(registry: self)
     }
 
-    @discardableResult
-    public func register<Service>(withName name: String? = nil, _ serviceRegistration: @escaping () -> Service?) -> RegistrationOptions<Service> {
-        let registration: ServiceRegistration<Service> = { _ in
-            serviceRegistration()
-        }
-        return register(withName: name, registration)
-    }
-
-    public func optionalResolve<Service>(implementationOf _: Service.Type = Service.self, name: String? = nil) -> Service? {
+    public func optionalResolve<Service>(implementationOf _: Service.Type, name: String?) -> Service? {
         lock.lock()
         defer {
             lock.unlock()
@@ -72,7 +103,7 @@ public final class ServiceRegistry {
         return factory?(self)
     }
 
-    public func resolve<Service>(implementationOf _: Service.Type = Service.self, name: String? = nil) -> Service {
+    public func resolve<Service>(implementationOf _: Service.Type, name: String?) -> Service {
         lock.lock()
         defer {
             lock.unlock()
@@ -94,7 +125,7 @@ public final class ServiceRegistry {
     private(set) weak var parent: ServiceRegistry?
 }
 
-private extension ServiceRegistry {
+internal extension ServiceRegistry {
     func locateRegistration<Service>(name: String?) -> ServiceRegistration<Service>? {
         let key = registrationKey(subject: Service.self, name: name)
 

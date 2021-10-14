@@ -7,6 +7,12 @@
 
 import Foundation
 
+struct MainComponent: MainRegistryComponent {
+    func registrar(domain: ServiceRegistry.Domain) -> ServiceRegistrar {
+        ServiceRegistry.container(domain: domain)
+    }
+}
+
 public final class SRPluginIntegrator: ServiceRegistryPlugin {
     public let identifier: String
 
@@ -27,9 +33,15 @@ public final class SRPluginIntegrator: ServiceRegistryPlugin {
         return self
     }
 
-    public func registerAllServices() {
+    public func registerAllServices(in main: MainRegistryComponent) {
         plugins.forEach {
-            $0.registerAllServices()
+            $0.registerAllServices(in: main)
         }
+    }
+}
+
+public extension SRPluginIntegrator {
+    func registerAllServices() {
+        registerAllServices(in: MainComponent())
     }
 }

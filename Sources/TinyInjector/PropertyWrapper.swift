@@ -10,8 +10,12 @@ import Foundation
 @propertyWrapper
 public struct Injected<Service> {
     private var service: Service
-    public init(name: String? = nil, registry: ServiceRegistry = .container()) {
-        service = registry.resolve(name: name)
+    public init(name: String? = nil, resolver: ServiceResolver = ServiceRegistry.shared) {
+        service = resolver.resolve(name: name)
+    }
+
+    public init(name: String? = nil, domain: ServiceRegistry.Domain) {
+        self.init(name: name, resolver: ServiceRegistry.container(domain: domain))
     }
 
     public var wrappedValue: Service {
@@ -29,12 +33,16 @@ public struct Injected<Service> {
 public struct LazyInjected<Service> {
     private var service: Service!
 
-    public var registry: ServiceRegistry
+    public var resolver: ServiceResolver
     public var name: String?
 
-    public init(name: String? = nil, registry: ServiceRegistry = .container()) {
+    public init(name: String? = nil, resolver: ServiceResolver = ServiceRegistry.shared) {
         self.name = name
-        self.registry = registry
+        self.resolver = resolver
+    }
+
+    public init(name: String? = nil, domain: ServiceRegistry.Domain) {
+        self.init(name: name, resolver: ServiceRegistry.container(domain: domain))
     }
 
     public var isEmpty: Bool {
@@ -44,7 +52,7 @@ public struct LazyInjected<Service> {
     public var wrappedValue: Service {
         mutating get {
             if self.service == nil {
-                let locatedService: Service = registry.resolve(name: name)
+                let locatedService: Service = resolver.resolve(name: name)
                 service = locatedService
             }
             return service
@@ -66,8 +74,12 @@ public struct LazyInjected<Service> {
 public struct OptionalInjected<Service> {
     private var service: Service?
 
-    public init(name: String? = nil, registry: ServiceRegistry = .container()) {
-        service = registry.optionalResolve(name: name)
+    public init(name: String? = nil, resolver: ServiceResolver = ServiceRegistry.shared) {
+        service = resolver.optionalResolve(name: name)
+    }
+
+    public init(name: String? = nil, domain: ServiceRegistry.Domain) {
+        self.init(name: name, resolver: ServiceRegistry.container(domain: domain))
     }
 
     public var wrappedValue: Service? {
