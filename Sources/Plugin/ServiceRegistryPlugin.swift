@@ -22,7 +22,7 @@ public extension MainRegistryComponent {
 public protocol ServiceRegistryPlugin {
     var identifier: String { get }
 
-    func registerAllServices(in main: MainRegistryComponent)
+    func registerAllServices(into main: MainRegistryComponent)
 }
 
 // Default identifier is equivalent to type name

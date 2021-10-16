@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "TinyInjector"
-  s.version = "1.2.0"
+  s.version = "1.3.0"
   s.swift_versions = ["5.4", "5.5"]
   s.summary = "Super light weight of Dependency Manager."
 

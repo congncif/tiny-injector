@@ -33,15 +33,15 @@ public final class SRPluginIntegrator: ServiceRegistryPlugin {
         return self
     }
 
-    public func registerAllServices(in main: MainRegistryComponent) {
+    public func registerAllServices(into main: MainRegistryComponent) {
         plugins.forEach {
-            $0.registerAllServices(in: main)
+            $0.registerAllServices(into: main)
         }
     }
 }
 
 public extension SRPluginIntegrator {
     func registerAllServices() {
-        registerAllServices(in: MainComponent())
+        registerAllServices(into: MainComponent())
     }
 }

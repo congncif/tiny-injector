@@ -13,7 +13,7 @@ extension ServiceRegistry.Domain {
 }
 
 public struct PaymentServiceRegistryPlugin: ServiceRegistryPlugin {
-    public func registerAllServices(in main: MainRegistryComponent) {
+    public func registerAllServices(into main: MainRegistryComponent) {
         // Register public services
         main.register { PaymentProvider() }.implements(PaymentService.self)
 
