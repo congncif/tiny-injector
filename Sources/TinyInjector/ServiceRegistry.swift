@@ -81,7 +81,7 @@ public final class ServiceRegistry: ServiceRegistrar, ServiceResolver {
     }
 
     @discardableResult
-    public func register<Service>(withName name: String?, scope: InstanceScope, _ serviceRegistration: @escaping ServiceRegistration<Service>) -> RegistrationOptions<Service> {
+    public func register<Service>(withName name: String?, scope: InstanceScope = .unique, _ serviceRegistration: @escaping ServiceRegistration<Service>) -> RegistrationOptions<Service> {
         lock.lock()
         defer {
             lock.unlock()
@@ -95,7 +95,7 @@ public final class ServiceRegistry: ServiceRegistrar, ServiceResolver {
     }
 
     @discardableResult
-    public func register<Service, ServiceType>(_: ServiceType.Type, withName name: String? = nil, scope: InstanceScope, _ serviceRegistration: @escaping () -> Service?) -> RegistrationOptions<ServiceType> {
+    public func register<Service, ServiceType>(_: ServiceType.Type, withName name: String? = nil, scope: InstanceScope = .unique, _ serviceRegistration: @escaping () -> Service?) -> RegistrationOptions<ServiceType> {
         register(withName: name, scope: scope) {
             serviceRegistration() as? ServiceType
         }
