@@ -253,9 +253,9 @@ final class ServiceBox<Service> {
     var value: Any?
 
     func put(service: Service, preferWeakRef: Bool = true) {
-        if let service = service as? AnyObject {
+        if type(of: object as Any) is AnyClass {
             if preferWeakRef {
-                object = service
+                object = object as AnyObject
             } else {
                 value = service
             }
