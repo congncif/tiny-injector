@@ -13,8 +13,8 @@ public protocol MainRegistryComponent: ServiceRegistrar {
 
 public extension MainRegistryComponent {
     @discardableResult
-    func register<Service>(withName name: String?, _ serviceRegistration: @escaping ServiceRegistration<Service>) -> RegistrationOptions<Service> {
-        registrar(domain: .shared).register(withName: name, serviceRegistration)
+    func register<Service>(withName name: String?, scope: InstanceScope, _ serviceRegistration: @escaping ServiceRegistration<Service>) -> RegistrationOptions<Service> {
+        registrar(domain: .shared).register(withName: name, scope: scope, serviceRegistration)
     }
 }
 

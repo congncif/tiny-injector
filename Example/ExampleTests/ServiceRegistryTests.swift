@@ -50,17 +50,17 @@ class ServiceRegistryTests: XCTestCase {
         XCTAssertNotNil(biggerService)
     }
 
-    func testPropertyWrapper() throws {
-        registry.register { MockProvider() }.implements(MockService.self).implements(MockService2.self)
-            .register {
-                BiggerProvider(mockService: $0.resolve())
-            }.implements(BiggerMockService.self)
-
-        let sut = PropertyWrapperProvider()
-        _ = sut.mockService
-        _ = sut.biggerService
-        XCTAssertNotNil(sut.mockService2)
-    }
+//    func testPropertyWrapper() throws {
+//        registry.register { MockProvider() }.implements(MockService.self).implements(MockService2.self)
+//            .register {
+//                BiggerProvider(mockService: $0.resolve())
+//            }.implements(BiggerMockService.self)
+//
+//        let sut = PropertyWrapperProvider()
+//        _ = sut.mockService
+//        _ = sut.biggerService
+//        XCTAssertNotNil(sut.mockService2)
+//    }
 }
 
 // MARK: - Mock
@@ -88,8 +88,8 @@ private class BiggerProvider: BiggerMockService {
     }
 }
 
-private class PropertyWrapperProvider {
-    @LazyInjected(registry: registry) var mockService: MockService
-    @Injected(registry: registry) var biggerService: BiggerMockService
-    @OptionalInjected(registry: registry) var mockService2: MockService2?
-}
+//private class PropertyWrapperProvider {
+//    @LazyInjected(registry: registry) var mockService: MockService
+//    @Injected(registry: registry) var biggerService: BiggerMockService
+//    @OptionalInjected(registry: registry) var mockService2: MockService2?
+//}

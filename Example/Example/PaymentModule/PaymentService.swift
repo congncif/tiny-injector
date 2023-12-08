@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol PaymentService {
+public protocol PaymentService: AnyObject {
     func pay(item itemID: String, completion: @escaping (Result<String, Error>) -> Void)
 }
 

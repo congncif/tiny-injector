@@ -18,6 +18,10 @@ class ViewController: UIViewController {
 
     @IBAction func payButtonDidTap() {
         let orderID = orderService.getOrder()
+        
+        print("🌷 \(addressHeap(o: paymentService))")
+        print(paymentService === (UIApplication.shared.delegate as? AppDelegate)?.paymentService)
+        
         paymentService.pay(item: orderID) { result in
             print("Payment Result: \(result)")
         }

@@ -8,11 +8,21 @@
 import TinyInjector
 import UIKit
 
+func addressHeap(o: AnyObject) -> Int {
+    return unsafeBitCast(o, to: Int.self)
+}
+
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    var paymentService: PaymentService?
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         registerAllServices()
 
+        paymentService = ServiceRegistry.shared.optionalResolve()
+        print("🎃 \(addressHeap(o: paymentService!))")
+        paymentService = nil
+        
         return true
     }
 
