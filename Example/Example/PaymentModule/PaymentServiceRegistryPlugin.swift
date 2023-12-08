@@ -15,7 +15,7 @@ extension ServiceRegistry.Domain {
 public struct PaymentServiceRegistryPlugin: ServiceRegistryPlugin {
     public func registerAllServices(into main: MainRegistryComponent) {
         // Register public services
-        main.register(scope: .default) { PaymentProvider() }.implements(PaymentService.self)
+        main.register(scope: .unique) { PaymentProvider() }.implements(PaymentService.self)
 
         // Register internal services
         main.registrar(domain: .payment)

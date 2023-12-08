@@ -14,12 +14,12 @@ public protocol ServiceRegistrar {
 
 public extension ServiceRegistrar {
     @discardableResult
-    func register<Service>(scope: InstanceScope = .default, _ serviceRegistration: @escaping ServiceRegistration<Service>) -> RegistrationOptions<Service> {
+    func register<Service>(scope: InstanceScope = .unique, _ serviceRegistration: @escaping ServiceRegistration<Service>) -> RegistrationOptions<Service> {
         register(withName: nil, scope: scope, serviceRegistration)
     }
 
     @discardableResult
-    func register<Service>(withName name: String? = nil, scope: InstanceScope = .default, _ serviceRegistration: @escaping () -> Service?) -> RegistrationOptions<Service> {
+    func register<Service>(withName name: String? = nil, scope: InstanceScope = .unique, _ serviceRegistration: @escaping () -> Service?) -> RegistrationOptions<Service> {
         let registration: ServiceRegistration<Service> = { _ in
             serviceRegistration()
         }
@@ -184,20 +184,20 @@ public final class RegistrationOptions<Service> {
     }
 
     @discardableResult
-    public func register<Service>(withName name: String? = nil, scope: InstanceScope = .default, _ serviceRegistration: @escaping ServiceRegistration<Service>) -> RegistrationOptions<Service> {
+    public func register<Service>(withName name: String? = nil, scope: InstanceScope = .unique, _ serviceRegistration: @escaping ServiceRegistration<Service>) -> RegistrationOptions<Service> {
         registry.register(withName: name, scope: scope, serviceRegistration)
     }
 
     @discardableResult
-    public func register<Service>(withName name: String? = nil, scope: InstanceScope = .default, _ serviceRegistration: @escaping () -> Service?) -> RegistrationOptions<Service> {
+    public func register<Service>(withName name: String? = nil, scope: InstanceScope = .unique, _ serviceRegistration: @escaping () -> Service?) -> RegistrationOptions<Service> {
         registry.register(withName: name, scope: scope, serviceRegistration)
     }
 }
 
 public enum InstanceScope {
-    case `default`
+    case unique
     case shared
-    case cached
+    case application
 }
 
 final class ServiceLocator<Service> {
@@ -214,11 +214,11 @@ final class ServiceLocator<Service> {
 
     func makeService() -> Service? {
         switch instanceScope {
-        case .default:
+        case .unique:
             return factory(resolver)
-        case .shared:
+        case .application:
             return locateService(preferWeakRef: false)
-        case .cached:
+        case .shared:
             return locateService(preferWeakRef: true)
         }
     }
